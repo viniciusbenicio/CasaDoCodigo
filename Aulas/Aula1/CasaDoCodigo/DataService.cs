@@ -1,25 +1,34 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CasaDoCodigo.Models;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace CasaDoCodigo
 {
     class DataService : IDataService
     {
-        private readonly ApplicationContext conexto;
+        private readonly ApplicationContext contexto;
 
-        public DataService(ApplicationContext conexto)
+        public DataService(ApplicationContext contexto)
         {
-            this.conexto = conexto;
+            this.contexto = contexto;
         }
 
         public void InicializaDB()
         {
-            conexto.Database.Migrate();
+            contexto.Database.Migrate();
 
             var json = File.ReadAllText("livros.json");
             var livros = JsonConvert.DeserializeObject<List<Livro>>(json);
+
+            foreach (var livro in livros)
+            {
+                contexto.Set<Produto>().Add(new Produto(livro.Codigo, livro.Nome, livro.Preco));
+            }
+
+            contexto.SaveChanges();
         }
     }
 
