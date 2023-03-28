@@ -1,6 +1,7 @@
 ﻿using CasaDoCodigo.Models;
 using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CasaDoCodigo.Repository
 {
@@ -11,6 +12,11 @@ namespace CasaDoCodigo.Repository
         public ProdutoRepository(ApplicationContext contexto)
         {
             this.contexto = contexto;
+        }
+
+        public IList<Produto> GetProdutos()
+        {
+            return contexto.Set<Produto>().ToList();
         }
 
         public void SaveProdutos(List<Livro> livros)
