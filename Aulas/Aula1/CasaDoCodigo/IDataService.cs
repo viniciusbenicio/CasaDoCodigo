@@ -1,6 +1,6 @@
 ﻿namespace CasaDoCodigo
 {
-    internal interface IDataService
+    public interface IDataService
     {
         void InicializaDB();
     }
