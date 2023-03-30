@@ -25,7 +25,7 @@ namespace CasaDoCodigo.Repository
 
         private void SetPedidoId(int pedidoId)
         {
-            return contextAccessor.HttpContext.Session.SetInt32("PedidoId", pedidoId);
+            contextAccessor.HttpContext.Session.SetInt32("PedidoId", pedidoId);
 
         }
     }
