@@ -38,14 +38,14 @@
                 <div class="col-md-2 text-center">
                     <div class="input-group">
                         <span class="input-group-btn">
-                            <button class="btn btn-default">
+                            <button class="btn btn-default" >
                                 <span class="glyphicon-minus"></span>
                             </button>
                         </span>
                         <input type="text" value="@(item.Quantidade)"
                                class="form-control text-center" />
                         <span class="input-group-btn">
-                            <button class="btn btn-default">
+                            <button class="btn btn-default" onclick="clickAddProduto()">
                                 <span class="glyphicon-plus"></span>
                             </button>
                         </span>
@@ -92,3 +92,15 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+<script type="text/javascript">
+        function clickAddProduto() 
+        {
+            debugger;
+        }
+
+</script>
+}
+
