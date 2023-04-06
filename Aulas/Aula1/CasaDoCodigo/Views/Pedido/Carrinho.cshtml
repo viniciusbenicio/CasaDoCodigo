@@ -55,7 +55,7 @@
                 </div>
                 <div class="col-md-2">
                     R$ <span class="pull-right" subtotal>
-                        @(Model.Itens.Count())
+                        @(item.Quantidade * item.PrecoUnitario)
                     </span>
                 </div>
             </div>
