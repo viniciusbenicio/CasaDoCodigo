@@ -12,18 +12,25 @@ namespace CasaDoCodigo.Repository
         void AddItem(string codigo);
         Pedido GetPedido();
         UpdateQuantidadeResponse UpdateQuantidade(ItemPedido itemPedido);
+        Pedido UpdateCadastro(Cadastro cadastro);
     }
 
     public class PedidoRepository : BaseRepository<Pedido>, IPedidoRepository
     {
         private readonly IHttpContextAccessor contextAccessor;
         private readonly IItemPedidoRepository itemPedidoRepository;
+        private readonly ICadastroRepository cadastroRepository;
 
-        public PedidoRepository(ApplicationContext contexto, IHttpContextAccessor contextAccessor, 
-                                IItemPedidoRepository itemPedidoRepository) : base(contexto)
+        public PedidoRepository(ApplicationContext contexto,
+                                IHttpContextAccessor contextAccessor,
+                                IItemPedidoRepository itemPedidoRepository,
+                                ICadastroRepository cadastroRepository
+                                )
+                                : base(contexto)
         {
             this.contextAccessor = contextAccessor;
-            this.itemPedidoRepository = itemPedidoRepository;   
+            this.itemPedidoRepository = itemPedidoRepository;
+            this.cadastroRepository = cadastroRepository;
         }
 
         public void AddItem(string codigo)
@@ -32,7 +39,7 @@ namespace CasaDoCodigo.Repository
                                   .Where(p => p.Codigo == codigo)
                                   .SingleOrDefault();
 
-            if(produto == null)
+            if (produto == null)
             {
                 throw new ArgumentException("Produto não encotrado");
             }
@@ -44,7 +51,7 @@ namespace CasaDoCodigo.Repository
                                             && i.Pedido.Id == pedido.Id)
                                      .SingleOrDefault();
 
-            if(itemPedido == null)
+            if (itemPedido == null)
             {
                 itemPedido = new ItemPedido(pedido, produto, 1, produto.Preco);
                 contexto.Set<ItemPedido>()
@@ -63,7 +70,7 @@ namespace CasaDoCodigo.Repository
                         .Where(p => p.Id == pedidoId)
                         .SingleOrDefault();
 
-            if(pedido == null)
+            if (pedido == null)
             {
                 pedido = new Pedido();
                 dbSet.Add(pedido);
@@ -77,7 +84,7 @@ namespace CasaDoCodigo.Repository
         private int? GetPedidoId()
         {
             return contextAccessor.HttpContext.Session.GetInt32("PedidoId");
-            
+
         }
 
         private void SetPedidoId(int pedidoId)
@@ -88,13 +95,13 @@ namespace CasaDoCodigo.Repository
 
         public UpdateQuantidadeResponse UpdateQuantidade(ItemPedido itemPedido)
         {
-            var itemPedidoDB =  itemPedidoRepository.GetItemPedido(itemPedido.Id);
+            var itemPedidoDB = itemPedidoRepository.GetItemPedido(itemPedido.Id);
 
             if (itemPedidoDB != null)
             {
                 itemPedidoDB.AtualizaQuantidade(itemPedido.Quantidade);
 
-                if(itemPedido.Quantidade == 0)
+                if (itemPedido.Quantidade == 0)
                 {
                     itemPedidoRepository.RemoveItemPedido(itemPedido.Id);
                 }
@@ -107,7 +114,16 @@ namespace CasaDoCodigo.Repository
 
             throw new ArgumentException("ItemPedido não encontrado...");
 
-            
+
+        }
+
+        public Pedido UpdateCadastro(Cadastro cadastro)
+        {
+            var pedido = GetPedido();
+
+            cadastroRepository.Update(pedido.Cadastro.Id, cadastro);
+
+            return pedido;
         }
     }
 }
